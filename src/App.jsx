@@ -14,6 +14,9 @@ function App() {
     mapboxgl.accessToken = accessToken;
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
+      // Initial view: Amazon region
+      center: [-60.17795, -6.82434],
+      zoom: 5,
     });
     return () => {
       mapRef.current.remove();
