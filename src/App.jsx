@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import "./App.css";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -18,6 +18,34 @@ function App() {
       center: [-60.17795, -6.82434],
       zoom: 5,
     });
+
+    mapRef.current.on("load", () => {
+      mapRef.current.addSource("indigenous", {
+        type: "geojson",
+        data: "/Indigenous_Territories.geojson",
+      });
+
+      mapRef.current.addLayer({
+        id: "indigenous-layer",
+        type: "fill",
+        source: "indigenous",
+        paint: {
+          "fill-color": "#088",
+          "fill-opacity": 0.5,
+        },
+      });
+
+      mapRef.current.addLayer({
+        id: "indigenous-outline",
+        type: "line",
+        source: "indigenous",
+        paint: {
+          "line-color": "#000",
+          "line-width": 0.5,
+        },
+      });
+    });
+
     return () => {
       mapRef.current.remove();
     };
