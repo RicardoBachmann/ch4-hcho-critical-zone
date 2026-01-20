@@ -10,6 +10,19 @@ function App() {
   const mapContainerRef = useRef();
   const accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
+  const nativeLandApiKey = import.meta.env.VITE_NATIVE_LAND_API_KEY;
+
+  useEffect(() => {
+    fetch(
+      `https://native-land.ca/api/polygons/geojson/languages?key=${nativeLandApiKey}`,
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Native Land Data:", data);
+      })
+      .catch((error) => console.error(error));
+  }, []);
+
   useEffect(() => {
     mapboxgl.accessToken = accessToken;
     mapRef.current = new mapboxgl.Map({
