@@ -22,7 +22,7 @@ function App() {
     mapRef.current.on("load", () => {
       mapRef.current.addSource("indigenous", {
         type: "geojson",
-        data: "/Indigenous_Territories.geojson",
+        data: "https://pub-49eaf3cf9daf4701a7e62bff979c1f65.r2.dev/Indigenous_Territories.geojson",
       });
 
       mapRef.current.addLayer({
