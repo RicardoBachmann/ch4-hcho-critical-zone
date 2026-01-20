@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import "./App.css";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -11,6 +11,7 @@ function App() {
   const accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
   const nativeLandApiKey = import.meta.env.VITE_NATIVE_LAND_API_KEY;
+  const [indigenousLand, setIndigenousLand] = useState([]);
 
   useEffect(() => {
     fetch(
@@ -19,6 +20,7 @@ function App() {
       .then((res) => res.json())
       .then((data) => {
         console.log("Native Land Data:", data);
+        setIndigenousLand(data);
       })
       .catch((error) => console.error(error));
   }, []);
@@ -55,6 +57,22 @@ function App() {
         paint: {
           "line-color": "#000",
           "line-width": 0.5,
+        },
+      });
+    });
+    mapRef.current.on("load", () => {
+      mapRef.current.addSource("nativland", {
+        type: "geojson",
+        data: indigenousLand,
+      });
+
+      mapRef.current.addLayer({
+        id: "nativeland-layer",
+        type: "fill",
+        source: "nativland",
+        paint: {
+          "fill-color": ["get", "color"],
+          "fill-opacity": 0.5,
         },
       });
     });
