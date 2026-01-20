@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import "./App.css";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import fetchNativeLandService from "./services/nativeLandService";
 
 function App() {
   // Map instance
@@ -10,19 +11,14 @@ function App() {
   const mapContainerRef = useRef();
   const accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
-  const nativeLandApiKey = import.meta.env.VITE_NATIVE_LAND_API_KEY;
   const [indigenousLand, setIndigenousLand] = useState([]);
 
   useEffect(() => {
-    fetch(
-      `https://native-land.ca/api/polygons/geojson/languages?key=${nativeLandApiKey}`,
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Native Land Data:", data);
-        setIndigenousLand(data);
-      })
-      .catch((error) => console.error(error));
+    async function loadData() {
+      const result = await fetchNativeLandService();
+      setIndigenousLand(result);
+    }
+    loadData();
   }, []);
 
   useEffect(() => {
