@@ -1,7 +1,8 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import "./App.css";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import fetchNativeLandService from "./services/nativeLandService.js";
 
 function App() {
   // Map instance
@@ -9,6 +10,29 @@ function App() {
   // Map container html-el
   const mapContainerRef = useRef();
   const accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
+
+  const [territoriesData, setTerritoriesData] = useState(null);
+  const [languagesData, setLanguagesData] = useState(null);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const territories = await fetchNativeLandService("Territories"); // TODO: Add proxy
+        setTerritoriesData(territories);
+        console.log("Territories loaded:", territories);
+      } catch (error) {
+        console.error("Territories faild:", error);
+      }
+      try {
+        const languages = await fetchNativeLandService("Languages");
+        setLanguagesData(languages);
+        console.log("Languages loaded:", languages);
+      } catch (error) {
+        console.error("Languages failed:", error);
+      }
+    }
+    loadData();
+  }, []);
 
   useEffect(() => {
     mapboxgl.accessToken = accessToken;
@@ -18,10 +42,83 @@ function App() {
       center: [-60.17795, -6.82434],
       zoom: 5,
     });
+
+    mapRef.current.on("load", () => {
+      mapRef.current.addSource("indigenous", {
+        type: "geojson",
+        data: "https://pub-49eaf3cf9daf4701a7e62bff979c1f65.r2.dev/Indigenous_Territories.geojson",
+      });
+
+      mapRef.current.addLayer({
+        id: "indigenous-layer",
+        type: "fill",
+        source: "indigenous",
+        paint: {
+          "fill-color": "#088",
+          "fill-opacity": 0.5,
+        },
+      });
+
+      mapRef.current.addLayer({
+        id: "indigenous-outline",
+        type: "line",
+        source: "indigenous",
+        paint: {
+          "line-color": "#000",
+          "line-width": 0.5,
+        },
+      });
+    });
+
     return () => {
       mapRef.current.remove();
     };
-  });
+  }, [accessToken]);
+
+  useEffect(() => {
+    console.log("MapRef:", mapRef);
+    console.log("Territories data:", territoriesData);
+    console.log("Languages data:", languagesData);
+
+    if (!mapRef.current) {
+      return;
+    }
+
+    // Territories Layer
+    // Load Native Land data (Territories currently blocked by CORS)
+    if (territoriesData && !mapRef.current.getSource("territories")) {
+      mapRef.current.addSource("territories", {
+        type: "geojson",
+        data: territoriesData,
+      });
+      mapRef.current.addLayer({
+        id: "native-land-territories-layer",
+        type: "fill",
+        source: "territories",
+        paint: {
+          "fill-color": "#4e9138",
+          "fill-opacity": 0.5,
+        },
+      });
+    }
+
+    // Languages Layer
+    if (languagesData && !mapRef.current.getSource("languages")) {
+      mapRef.current.addSource("languages", {
+        type: "geojson",
+        data: languagesData,
+      });
+      mapRef.current.addLayer({
+        id: "native-land-languages-layer",
+        type: "fill",
+        source: "languages",
+        paint: {
+          "fill-color": "#eb710e",
+          "fill-opacity": 0.5,
+        },
+      });
+    }
+  }, [territoriesData, languagesData]);
 
   return (
     <>
