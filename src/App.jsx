@@ -16,14 +16,20 @@ function App() {
 
   useEffect(() => {
     async function loadData() {
-      const [territories, languages] = await Promise.all([
-        fetchNativeLandService("Territories"),
-        fetchNativeLandService("Languages"),
-      ]);
-      console.log("Territories loaded:", territories);
-      console.log("Languages loaded:", languages);
-      setTerritoriesData(territories);
-      setLanguagesData(languages);
+      try {
+        const territories = await fetchNativeLandService("Territories");
+        setTerritoriesData(territories);
+        console.log("Territories loaded:", territories);
+      } catch (error) {
+        console.error("Territories faild:", error);
+      }
+      try {
+        const languages = await fetchNativeLandService("Languages");
+        setLanguagesData(languages);
+        console.log("Languages loaded:", languages);
+      } catch (error) {
+        console.error("Languages failed:", error);
+      }
     }
     loadData();
   }, []);
@@ -74,39 +80,43 @@ function App() {
     console.log("Territories data:", territoriesData);
     console.log("Languages data:", languagesData);
 
-    if (!mapRef.current || !territoriesData || !languagesData) {
+    if (!mapRef.current) {
       return;
     }
 
     //Territories Layer
-    mapRef.current.addSource("territories", {
-      type: "geojson",
-      data: territoriesData,
-    });
-    mapRef.current.addLayer({
-      id: "native-land-territories-layer",
-      type: "fill",
-      source: "territories",
-      paint: {
-        "fill-color": "#4e9138",
-        "fill-opacity": 0.5,
-      },
-    });
+    if (territoriesData && !mapRef.current.getSource("territories")) {
+      mapRef.current.addSource("territories", {
+        type: "geojson",
+        data: territoriesData,
+      });
+      mapRef.current.addLayer({
+        id: "native-land-territories-layer",
+        type: "fill",
+        source: "territories",
+        paint: {
+          "fill-color": "#4e9138",
+          "fill-opacity": 0.5,
+        },
+      });
+    }
 
     //Languages Layer
-    mapRef.current.addSource("languages", {
-      type: "geojson",
-      data: languagesData,
-    });
-    mapRef.current.addLayer({
-      id: "native-land-languages-layer",
-      type: "fill",
-      source: "languages",
-      paint: {
-        "fill-color": "#eb710e",
-        "fill-opacity": 0.5,
-      },
-    });
+    if (languagesData && !mapRef.current.getSource("languages")) {
+      mapRef.current.addSource("languages", {
+        type: "geojson",
+        data: languagesData,
+      });
+      mapRef.current.addLayer({
+        id: "native-land-languages-layer",
+        type: "fill",
+        source: "languages",
+        paint: {
+          "fill-color": "#eb710e",
+          "fill-opacity": 0.5,
+        },
+      });
+    }
   }, [territoriesData, languagesData]);
 
   return (
