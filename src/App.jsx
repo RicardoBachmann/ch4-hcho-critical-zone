@@ -17,7 +17,7 @@ function App() {
   useEffect(() => {
     async function loadData() {
       try {
-        const territories = await fetchNativeLandService("Territories");
+        const territories = await fetchNativeLandService("Territories"); // TODO: Add proxy
         setTerritoriesData(territories);
         console.log("Territories loaded:", territories);
       } catch (error) {
@@ -84,7 +84,8 @@ function App() {
       return;
     }
 
-    //Territories Layer
+    // Territories Layer
+    // Load Native Land data (Territories currently blocked by CORS)
     if (territoriesData && !mapRef.current.getSource("territories")) {
       mapRef.current.addSource("territories", {
         type: "geojson",
@@ -101,7 +102,7 @@ function App() {
       });
     }
 
-    //Languages Layer
+    // Languages Layer
     if (languagesData && !mapRef.current.getSource("languages")) {
       mapRef.current.addSource("languages", {
         type: "geojson",

@@ -2,14 +2,13 @@ async function fetchNativeLandService(productKey) {
   console.log("===NATIVE LAND-API SERVICE===");
   const nativeLandApiKey = import.meta.env.VITE_NATIVE_LAND_API_KEY;
 
-  // API_COLLECTION object for storing and categorize different Native Land products
+  // Available Native Land API endpoints, object for storing and categorize
   const API_COLLECTION = {
-    Territories: "territories",
+    Territories: "territories", // WORKAROUND: Territories has CORS issues - use proxy or R2
     Languages: "languages",
   };
 
   const collectionId = API_COLLECTION[productKey];
-  // const url = `https://native-land.ca/api/polygons/geojson/languages?key=${nativeLandApiKey}`;
   const url = `https://native-land.ca/api/polygons/geojson/${collectionId}?key=${nativeLandApiKey}`;
 
   if (!collectionId) {
