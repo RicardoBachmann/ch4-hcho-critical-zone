@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import "./App.css";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import fetchNativeLandService from "./services/nativeLandService";
+import fetchNativeLandService from ".src/fetchNativeLandService";
 
 function App() {
   // Map instance
