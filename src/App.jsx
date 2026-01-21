@@ -121,7 +121,7 @@ function App() {
     }
   }, [territoriesData, languagesData]);
 
-  // Critical Dam Layer (GDW-Data)
+  // Critical 50 Dams Layer (GDW-Data)
   useEffect(() => {
     mapRef.current.on("load", () => {
       mapRef.current.addSource("critical-dam", {
@@ -137,6 +137,27 @@ function App() {
           "circle-radius": 8,
           "circle-stroke-width": 2,
           "circle-color": "red",
+          "circle-stroke-color": "white",
+        },
+      });
+    });
+  }, []);
+
+  // UHE & PCH Dams Layer (Raisg-Data)
+  useEffect(() => {
+    mapRef.current.on("load", () => {
+      mapRef.current.addSource("uhe-pch-dams", {
+        type: "geojson",
+        data: "/data/UHE_PCH_Dam_Locations(Raisg).geojson",
+      });
+      mapRef.current.addLayer({
+        id: "uhe-pch-dam-layer",
+        type: "circle",
+        source: "uhe-pch-dams",
+        paint: {
+          "circle-radius": 3,
+          "circle-stroke-width": 2,
+          "circle-color": "blue",
           "circle-stroke-color": "white",
         },
       });
