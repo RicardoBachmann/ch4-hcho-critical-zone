@@ -1,0 +1,68 @@
+<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
+<qgis version="3.40.5-Bratislava">
+  <identifier>hidroeletricas_clp</identifier>
+  <parentidentifier></parentidentifier>
+  <language>SPA</language>
+  <type>dataset</type>
+  <title>Hidroeléctricas</title>
+  <abstract>Mapa de las Hidroeléctricas, en el ámbito de la Red Amazónica de Información Socioambiental Georreferenciada para la Amazónia
+
+Plantas Hidroeléctricas en la Amazonía
+
+REQUIRED: A brief narrative summary of the data set.
+
+REQUIRED: A summary of the intentions with which the data set was developed.
+
+Las escalas de referencia de los datos varían según el país, y es considerado la más pequeña para RAISG (1:250.000).</abstract>
+  <keywords vocabulary="Suchschlüssel">
+    <keyword>hidroeléctricas</keyword>
+    <keyword>RAISG</keyword>
+  </keywords>
+  <keywords vocabulary="gmd:topicCategory">
+    <keyword>REQUIRED: Common-use word or phrase used to describe the subject of the data set.</keyword>
+  </keywords>
+  <contact>
+    <name>RAISG - Red Amazónica de Información Socioambiental Georreferenciada</name>
+    <organization></organization>
+    <position></position>
+    <voice></voice>
+    <fax></fax>
+    <email></email>
+    <role>Ansprechpartner</role>
+  </contact>
+  <links>
+    <link description="" type="Local Area Network" size="" mimeType="" url="file://\\LAP_MON01\Dados\raisg-mapa2012\consolidacao.gdb" name="Geographic Service (REST)" format=""/>
+  </links>
+  <history>Fuentes cartográficas del tema Hidroeléctricas: • BOLIVIA: Empresa Nacional de Electrificación, 2010; Viceministerio de Electricidad y Energías Alternativas, 2008; IIRSA, 2009 • BRASIL: Agência Nacional de Energia Elétrica - ANEEL, 2011 • ECUADOR:Conelec, 2009; Dams in Amazonía (www.dams-info.org), 2012 • PERÚ: Ministerio de Energía y Minas - MINEM, 2011 • VENEZUELA: IVIC, 2009. Océano y relieve: World Physical Map,U.S. National Park Service, in ArcGIS Online Services.</history>
+  <dates>
+    <date type="Published" value="2012-12-04T00:00:00"/>
+  </dates>
+  <fees></fees>
+  <constraints type="Nutzungseinschränkungen">Uso de los datos ocurre conforme Termo de Licencia de Uso de Datos e Geo servicios de RAISG.</constraints>
+  <constraints type="Zugriff">REQUIRED: Restrictions and legal prerequisites for accessing the data set.</constraints>
+  <rights>RAISG - Red Amazónica de Información Socioambiental Georreferenciada</rights>
+  <rights>REQUIRED: Restrictions and legal prerequisites for using the data set after access is granted.</rights>
+  <encoding></encoding>
+  <crs>
+    <spatialrefsys nativeFormat="Wkt">
+      <wkt>GEOGCRS["SIRGAS 2000",DATUM["Sistema de Referencia Geocentrico para las AmericaS 2000",ELLIPSOID["GRS 1980",6378137,298.257222101,LENGTHUNIT["metre",1]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["Horizontal component of 3D system."],AREA["Latin America - Central America and South America - onshore and offshore. Brazil - onshore and offshore."],BBOX[-59.87,-122.19,32.72,-25.28]],ID["EPSG",4674]]</wkt>
+      <proj4>+proj=longlat +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +no_defs</proj4>
+      <srsid>3517</srsid>
+      <srid>4674</srid>
+      <authid>EPSG:4674</authid>
+      <description>SIRGAS 2000</description>
+      <projectionacronym>longlat</projectionacronym>
+      <ellipsoidacronym>EPSG:7019</ellipsoidacronym>
+      <geographicflag>true</geographicflag>
+    </spatialrefsys>
+  </crs>
+  <extent>
+    <spatial crs="EPSG:4674" miny="-21.78950899999999891" minx="-80.63115700000000174" maxx="-44.6615809999999982" maxz="0" minz="0" maxy="8.30474199999999918" dimensions="2"/>
+    <temporal>
+      <period>
+        <start>2012-12-03T23:00:00Z</start>
+        <end></end>
+      </period>
+    </temporal>
+  </extent>
+</qgis>
