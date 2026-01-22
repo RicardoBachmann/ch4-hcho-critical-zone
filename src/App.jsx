@@ -150,14 +150,23 @@ function App() {
         type: "geojson",
         data: "/data/UHE_PCH_Dam_Locations(Raisg).geojson",
       });
+
       mapRef.current.addLayer({
         id: "uhe-pch-dam-layer",
         type: "circle",
+        slot: "middle",
         source: "uhe-pch-dams",
         paint: {
-          "circle-radius": 3,
-          "circle-stroke-width": 2,
-          "circle-color": "blue",
+          "circle-radius": 5,
+          "circle-color": [
+            "match",
+            ["get", "tipo"],
+            "UHE",
+            "red",
+            "PCH",
+            "#3bb2d0",
+            "#f135c5",
+          ],
           "circle-stroke-color": "white",
         },
       });
