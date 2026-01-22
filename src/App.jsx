@@ -3,6 +3,7 @@ import "./App.css";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import fetchNativeLandService from "./services/nativeLandService.js";
+import { fetchClimateTraceService } from "./services/climateTraceService.js";
 
 function App() {
   // Map instance
@@ -32,6 +33,12 @@ function App() {
       }
     }
     loadData();
+  }, []);
+
+  useEffect(() => {
+    fetchClimateTraceService()
+      .then((data) => console.log("Climate Trace data:", data))
+      .catch((err) => console.error("API Error:", err));
   }, []);
 
   useEffect(() => {
