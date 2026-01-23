@@ -14,6 +14,7 @@ function App() {
 
   const [territoriesData, setTerritoriesData] = useState(null);
   const [languagesData, setLanguagesData] = useState(null);
+  const [landUseData, setLandUseData] = useState(null); // All forestry-and-land-use
 
   useEffect(() => {
     async function loadData() {
@@ -36,9 +37,20 @@ function App() {
   }, []);
 
   useEffect(() => {
-    fetchClimateTraceService()
-      .then((data) => console.log("Climate Trace data:", data))
-      .catch((err) => console.error("API Error:", err));
+    async function loadData() {
+      try {
+        const landUseEmissions = await fetchClimateTraceService();
+        setLandUseData(landUseEmissions);
+        console.log("Land use Emission loaded:", landUseEmissions);
+        const reservoirEmissions = landUseEmissions.filter(
+          (reservoirs) => reservoirs.subsector === "water-reservoirs"
+        );
+        console.log("Reservoir-emissions data:", reservoirEmissions);
+      } catch (error) {
+        console.error("Emission Data failed:", error);
+      }
+    }
+    loadData();
   }, []);
 
   useEffect(() => {
