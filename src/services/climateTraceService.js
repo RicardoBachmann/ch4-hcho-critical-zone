@@ -14,3 +14,17 @@ export async function fetchClimateTraceService() {
 
   return data;
 }
+
+export async function fetchClimateTraceAssets() {
+  {
+    const response = await fetch(
+      "https://api.c10e.org/v7/sources?" +
+        "year=2024&" +
+        "gas=ch4&" +
+        "subsectors=water-reservoirs&" +
+        "gadmId=BRA"
+    );
+    const data = await response.json();
+    return data;
+  }
+}
