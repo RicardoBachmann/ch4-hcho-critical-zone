@@ -4,6 +4,7 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import fetchNativeLandService from "./services/nativeLandService.js";
 import { fetchClimateTraceService } from "./services/climateTraceService.js";
+import { fetchClimateTraceAssets } from "./services/climateTraceService.js";
 
 function App() {
   // Map instance
@@ -15,11 +16,12 @@ function App() {
   const [territoriesData, setTerritoriesData] = useState(null);
   const [languagesData, setLanguagesData] = useState(null);
   const [landUseData, setLandUseData] = useState(null); // All forestry-and-land-use
+  const [assetData, setAssetData] = useState(null); // Emission assets for reservoirs
 
   useEffect(() => {
     async function loadData() {
       try {
-        const territories = await fetchNativeLandService("Territories"); // TODO: Add proxy
+        const territories = await fetchNativeLandService("Territories"); // TODO: Add proxy ?
         setTerritoriesData(territories);
         console.log("Territories loaded:", territories);
       } catch (error) {
@@ -36,6 +38,7 @@ function App() {
     loadData();
   }, []);
 
+  // Total Reservior Emissions
   useEffect(() => {
     async function loadData() {
       try {
@@ -51,6 +54,20 @@ function App() {
       }
     }
     loadData();
+  }, []);
+
+  // Emission Assets
+  useEffect(() => {
+    async function loadAssets() {
+      try {
+        const assets = await fetchClimateTraceAssets();
+        setAssetData(assets);
+        console.log("Assets loaded:", assets);
+      } catch (error) {
+        console.error("Assets failed:", error);
+      }
+    }
+    loadAssets();
   }, []);
 
   useEffect(() => {
