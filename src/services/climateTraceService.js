@@ -16,6 +16,7 @@ export async function fetchClimateTraceService() {
 }
 
 export async function fetchClimateTraceAssets() {
+  console.log("===CLIMATE TRACE ASSETS===");
   {
     const response = await fetch(
       "https://api.c10e.org/v7/sources?" +
