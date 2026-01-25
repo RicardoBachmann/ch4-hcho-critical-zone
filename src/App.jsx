@@ -38,7 +38,7 @@ function App() {
     loadData();
   }, []);
 
-  // Total Reservior Emissions
+  // Total Reservior Emissions (monthly 01-12/2024)
   useEffect(() => {
     async function loadData() {
       try {
@@ -56,7 +56,7 @@ function App() {
     loadData();
   }, []);
 
-  // Emission Assets
+  // Load Emission Assets (detail data resources for ch4-emissions-reservoirs-2024)
   useEffect(() => {
     async function loadAssets() {
       try {
@@ -208,6 +208,56 @@ function App() {
       });
     });
   }, []);
+
+  // Climate TRACE Format -> Geojson Format
+  const parseToGeoJSON = (assets) => {
+    return {
+      type: "FeatureCollection",
+      features: assets.map((asset) => ({
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [asset.centroid.longitude, asset.centroid.latitude],
+        },
+        properties: {
+          name: asset.name,
+          emissions: asset.emissionsQuantity,
+        },
+      })),
+    };
+  };
+
+  // Display Climate TRACE emissions assets
+  useEffect(() => {
+    if (!mapRef.current || !assetData) {
+      return;
+    }
+
+    const geojsonData = parseToGeoJSON(assetData);
+    mapRef.current.on(
+      "load",
+      () => {
+        mapRef.current.addSource("emissions-assets-data", {
+          type: "geojson",
+          data: geojsonData,
+        });
+
+        mapRef.current.addLayer({
+          id: "emission-location-layer",
+          type: "circle",
+          source: "emissions-assets-data",
+          paint: {
+            "circle-radius": 3,
+            "circle-color": "#223b53",
+            "circle-stroke-color": "yellow",
+            "circle-stroke-width": 1,
+            "circle-opacity": 0.5,
+          },
+        });
+      },
+      [assetData]
+    );
+  });
 
   return (
     <>
