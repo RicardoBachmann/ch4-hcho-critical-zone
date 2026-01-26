@@ -229,14 +229,13 @@ function App() {
 
   // Display Climate TRACE emissions assets
   useEffect(() => {
-    if (!mapRef.current || !assetData) {
-      return;
-    }
+    if (!mapRef.current || !assetData) return;
 
     const geojsonData = parseToGeoJSON(assetData);
-    mapRef.current.on(
-      "load",
-      () => {
+
+    // Warte bis Style WIRKLICH fertig ist
+    mapRef.current.once("idle", () => {
+      if (!mapRef.current.getSource("emissions-assets-data")) {
         mapRef.current.addSource("emissions-assets-data", {
           type: "geojson",
           data: geojsonData,
@@ -247,17 +246,24 @@ function App() {
           type: "circle",
           source: "emissions-assets-data",
           paint: {
-            "circle-radius": 3,
+            "circle-radius": [
+              "interpolate",
+              ["linear"],
+              ["get", "emissions"],
+              300,
+              3, // 300t CH4 = 3px
+              14000,
+              30, // 14000t CH4 = 20px
+            ],
             "circle-color": "#223b53",
             "circle-stroke-color": "yellow",
             "circle-stroke-width": 1,
             "circle-opacity": 0.5,
           },
         });
-      },
-      [assetData]
-    );
-  });
+      }
+    });
+  }, [assetData]);
 
   return (
     <>
