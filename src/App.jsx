@@ -233,7 +233,7 @@ function App() {
 
     const geojsonData = parseToGeoJSON(assetData);
 
-    // Warte bis Style WIRKLICH fertig ist
+    // (idle) Wait until Style is REALLY finished
     mapRef.current.once("idle", () => {
       if (!mapRef.current.getSource("emissions-assets-data")) {
         mapRef.current.addSource("emissions-assets-data", {
@@ -263,6 +263,49 @@ function App() {
         });
       }
     });
+  }, [assetData]);
+
+  useEffect(() => {
+    if (!mapRef.current || !assetData) return;
+
+    // base pop-up for better map navigation
+    const popup = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false,
+    });
+
+    mapRef.current.addInteraction("emissions-location-mouseenter", {
+      type: "mouseenter",
+      target: { layerId: "emission-location-layer" },
+      handler: (e) => {
+        mapRef.current.getCanvas().style.cursor = "pointer";
+
+        const coordinates = e.feature.geometry.coordinates.slice();
+        const damName = e.feature.properties.name;
+        const emissions = e.feature.properties.emissions;
+
+        popup
+          .setLngLat(coordinates)
+
+          .setHTML(
+            `<strong>${damName}</strong><p>CH4-Emissions:${emissions.toFixed(1)}t</p>`
+          )
+          .addTo(mapRef.current);
+      },
+    });
+    mapRef.current.addInteraction("emissions-location-mouseleave", {
+      type: "mouseleave",
+      target: { layerId: "emission-location-layer" },
+      handler: () => {
+        mapRef.current.getCanvas().style.cursor = "";
+        popup.remove();
+      },
+    });
+
+    return () => {
+      mapRef.current?.removeInteraction("emissions-location-mouseenter");
+      mapRef.current?.removeInteraction("emissions-location-mouseleave");
+    };
   }, [assetData]);
 
   return (
