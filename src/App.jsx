@@ -106,10 +106,6 @@ function App() {
         },
       });
     });
-
-    return () => {
-      mapRef.current.remove();
-    };
   }, [accessToken]);
 
   useEffect(() => {
@@ -307,6 +303,40 @@ function App() {
       mapRef.current?.removeInteraction("emissions-location-mouseleave");
     };
   }, [assetData]);
+
+  // Global Water Surface WMTS
+  useEffect(() => {
+    if (!mapRef.current) return;
+    mapRef.current.once("idle", () => {
+      if (!mapRef.current.getSource("gws-water-extent")) {
+        mapRef.current.addSource("gws-water-extent", {
+          type: "raster",
+          tiles: [
+            "https://storage.googleapis.com/global-surface-water/tiles2021/change/{z}/{x}/{y}.png",
+          ],
+          tileSize: 256,
+        });
+        mapRef.current.addLayer({
+          id: "gws-water-extent-layer",
+          type: "raster",
+          source: "gws-water-extent",
+          paint: {},
+          slot: "middle",
+        });
+      }
+    });
+
+    return () => {
+      if (mapRef.current) {
+        if (mapRef.current.getLayer("gws-water-extent-layer")) {
+          mapRef.current.removeLayer("gws-water-extent-layer");
+        }
+        if (mapRef.current.getSource("gws-water-extent")) {
+          mapRef.current.removeSource("gws-water-extent");
+        }
+      }
+    };
+  }, []);
 
   return (
     <>
