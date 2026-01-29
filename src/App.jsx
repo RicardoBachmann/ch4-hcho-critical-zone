@@ -3,6 +3,8 @@ import "./App.css";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import fetchNativeLandService from "./services/nativeLandService.js";
+import { fetchClimateTraceService } from "./services/climateTraceService.js";
+import { fetchClimateTraceAssets } from "./services/climateTraceService.js";
 
 function App() {
   // Map instance
@@ -13,11 +15,13 @@ function App() {
 
   const [territoriesData, setTerritoriesData] = useState(null);
   const [languagesData, setLanguagesData] = useState(null);
+  const [landUseData, setLandUseData] = useState(null); // All forestry-and-land-use
+  const [assetData, setAssetData] = useState(null); // Emission assets for reservoirs
 
   useEffect(() => {
     async function loadData() {
       try {
-        const territories = await fetchNativeLandService("Territories"); // TODO: Add proxy
+        const territories = await fetchNativeLandService("Territories"); // TODO: Add proxy ?
         setTerritoriesData(territories);
         console.log("Territories loaded:", territories);
       } catch (error) {
@@ -32,6 +36,38 @@ function App() {
       }
     }
     loadData();
+  }, []);
+
+  // Total Reservior Emissions (monthly 01-12/2024)
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const landUseEmissions = await fetchClimateTraceService();
+        setLandUseData(landUseEmissions);
+        console.log("Land use Emission loaded:", landUseEmissions);
+        const reservoirEmissions = landUseEmissions.filter(
+          (reservoirs) => reservoirs.subsector === "water-reservoirs"
+        );
+        console.log("Reservoir-emissions data:", reservoirEmissions);
+      } catch (error) {
+        console.error("Emission Data failed:", error);
+      }
+    }
+    loadData();
+  }, []);
+
+  // Load Emission Assets (detail data resources for ch4-emissions-reservoirs-2024)
+  useEffect(() => {
+    async function loadAssets() {
+      try {
+        const assets = await fetchClimateTraceAssets();
+        setAssetData(assets);
+        console.log("Assets loaded:", assets);
+      } catch (error) {
+        console.error("Assets failed:", error);
+      }
+    }
+    loadAssets();
   }, []);
 
   useEffect(() => {
@@ -172,6 +208,105 @@ function App() {
       });
     });
   }, []);
+
+  // Climate TRACE Format -> Geojson Format
+  const parseToGeoJSON = (assets) => {
+    return {
+      type: "FeatureCollection",
+      features: assets.map((asset) => ({
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [asset.centroid.longitude, asset.centroid.latitude],
+        },
+        properties: {
+          name: asset.name,
+          emissions: asset.emissionsQuantity,
+        },
+      })),
+    };
+  };
+
+  // Display Climate TRACE emissions assets
+  useEffect(() => {
+    if (!mapRef.current || !assetData) return;
+
+    const geojsonData = parseToGeoJSON(assetData);
+
+    // (idle) Wait until Style is REALLY finished
+    mapRef.current.once("idle", () => {
+      if (!mapRef.current.getSource("emissions-assets-data")) {
+        mapRef.current.addSource("emissions-assets-data", {
+          type: "geojson",
+          data: geojsonData,
+        });
+
+        mapRef.current.addLayer({
+          id: "emission-location-layer",
+          type: "circle",
+          source: "emissions-assets-data",
+          paint: {
+            "circle-radius": [
+              "interpolate",
+              ["linear"],
+              ["get", "emissions"],
+              300,
+              3, // 300t CH4 = 3px
+              14000,
+              30, // 14000t CH4 = 20px
+            ],
+            "circle-color": "#223b53",
+            "circle-stroke-color": "yellow",
+            "circle-stroke-width": 1,
+            "circle-opacity": 0.5,
+          },
+        });
+      }
+    });
+  }, [assetData]);
+
+  useEffect(() => {
+    if (!mapRef.current || !assetData) return;
+
+    // base pop-up for better map navigation
+    const popup = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false,
+    });
+
+    mapRef.current.addInteraction("emissions-location-mouseenter", {
+      type: "mouseenter",
+      target: { layerId: "emission-location-layer" },
+      handler: (e) => {
+        mapRef.current.getCanvas().style.cursor = "pointer";
+
+        const coordinates = e.feature.geometry.coordinates.slice();
+        const damName = e.feature.properties.name;
+        const emissions = e.feature.properties.emissions;
+
+        popup
+          .setLngLat(coordinates)
+
+          .setHTML(
+            `<strong>${damName}</strong><p>CH4-Emissions:${emissions.toFixed(1)}t</p>`
+          )
+          .addTo(mapRef.current);
+      },
+    });
+    mapRef.current.addInteraction("emissions-location-mouseleave", {
+      type: "mouseleave",
+      target: { layerId: "emission-location-layer" },
+      handler: () => {
+        mapRef.current.getCanvas().style.cursor = "";
+        popup.remove();
+      },
+    });
+
+    return () => {
+      mapRef.current?.removeInteraction("emissions-location-mouseenter");
+      mapRef.current?.removeInteraction("emissions-location-mouseleave");
+    };
+  }, [assetData]);
 
   return (
     <>
