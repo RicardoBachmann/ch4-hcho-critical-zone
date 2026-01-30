@@ -338,6 +338,26 @@ function App() {
     };
   }, []);
 
+  // GGE Integration HCHO TIFF Layer
+  useEffect(() => {
+    if (!mapRef.current) return;
+    console.log("HCHO loaded");
+    mapRef.current.once("idle", () => {
+      mapRef.current.addSource("hcho-data", {
+        type: "raster",
+        url: "mapbox://detroit313.bg3jgw59",
+        tileSize: 256,
+      });
+
+      mapRef.current.addLayer({
+        id: "hcho-layer",
+        type: "raster",
+        source: "hcho-data",
+        paint: { "raster-opacity": 0.8 },
+      });
+    });
+  }, []);
+
   return (
     <>
       <h1>Critical Zone</h1>
