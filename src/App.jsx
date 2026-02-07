@@ -338,7 +338,29 @@ function App() {
     };
   }, []);
 
-  // GGE Integration HCHO TIFF Layer
+  // GEE Integration CH4 Critical Hotspots (SEP2024) samples
+  useEffect(() => {
+    mapRef.current.on("load", () => {
+      mapRef.current.addSource("ch4-hotspot-samples", {
+        type: "geojson",
+        data: "/data/ch4_samples_export.geojson",
+      });
+      mapRef.current.addLayer({
+        id: "ch4-hotspot-layer",
+        type: "circle",
+        source: "ch4-hotspot-samples",
+        paint: {
+          "circle-radius": 20,
+          "circle-color": "transparent", //
+          "circle-stroke-width": 2, //
+          "circle-stroke-color": "orange",
+        },
+      });
+    });
+  }, []);
+
+  // GGE Integration HCHO TIFF Layer (INTEGRATION NOT WORKING)
+  /*
   useEffect(() => {
     if (!mapRef.current) return;
     console.log("HCHO loaded");
@@ -381,7 +403,7 @@ function App() {
         },
       });
     });
-  }, []);
+  }, []);*/
 
   return (
     <>
