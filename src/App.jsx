@@ -351,9 +351,32 @@ function App() {
         source: "ch4-hotspot-samples",
         paint: {
           "circle-radius": 20,
-          "circle-color": "transparent", //
-          "circle-stroke-width": 2, //
+          "circle-color": "transparent",
+          "circle-stroke-width": 2,
           "circle-stroke-color": "orange",
+        },
+      });
+    });
+  }, []);
+
+  // GEE Integration HCHO Critical Hotspots (SEP2024) samples
+
+  useEffect(() => {
+    mapRef.current.on("load", () => {
+      mapRef.current.addSource("hcho-hotspots-samples", {
+        type: "geojson",
+        data: "/data/hcho_samples_export.geojson",
+      });
+
+      mapRef.current.addLayer({
+        id: "hcho_hotspots_layer",
+        type: "circle",
+        source: "hcho-hotspots-samples",
+        paint: {
+          "circle-radius": 20,
+          "circle-color": "transparent",
+          "circle-stroke-width": 2,
+          "circle-stroke-color": "purple",
         },
       });
     });
@@ -369,7 +392,7 @@ function App() {
         type: "raster",
         url: "mapbox://detroit313.57txc13t",
         tileSize: 256,
-      });
+      }); 
 
       mapRef.current.addLayer({
         id: "hcho-layer",
