@@ -338,6 +338,96 @@ function App() {
     };
   }, []);
 
+  // GEE Integration CH4 Critical Hotspots (SEP2024) samples
+  useEffect(() => {
+    mapRef.current.on("load", () => {
+      mapRef.current.addSource("ch4-hotspot-samples", {
+        type: "geojson",
+        data: "/data/ch4_samples_export.geojson",
+      });
+      mapRef.current.addLayer({
+        id: "ch4-hotspot-layer",
+        type: "circle",
+        source: "ch4-hotspot-samples",
+        paint: {
+          "circle-radius": 20,
+          "circle-color": "transparent",
+          "circle-stroke-width": 2,
+          "circle-stroke-color": "orange",
+        },
+      });
+    });
+  }, []);
+
+  // GEE Integration HCHO Critical Hotspots (SEP2024) samples
+
+  useEffect(() => {
+    mapRef.current.on("load", () => {
+      mapRef.current.addSource("hcho-hotspots-samples", {
+        type: "geojson",
+        data: "/data/hcho_samples_export.geojson",
+      });
+
+      mapRef.current.addLayer({
+        id: "hcho_hotspots_layer",
+        type: "circle",
+        source: "hcho-hotspots-samples",
+        paint: {
+          "circle-radius": 20,
+          "circle-color": "transparent",
+          "circle-stroke-width": 2,
+          "circle-stroke-color": "purple",
+        },
+      });
+    });
+  }, []);
+
+  // GGE Integration HCHO TIFF Layer (INTEGRATION NOT WORKING)
+  /*
+  useEffect(() => {
+    if (!mapRef.current) return;
+    console.log("HCHO loaded");
+    mapRef.current.once("idle", () => {
+      mapRef.current.addSource("hcho-data", {
+        type: "raster",
+        url: "mapbox://detroit313.57txc13t",
+        tileSize: 256,
+      }); 
+
+      mapRef.current.addLayer({
+        id: "hcho-layer",
+        type: "raster",
+        source: "hcho-data",
+        paint: {
+          "raster-opacity": 0.8,
+          "raster-color": [
+            "interpolate",
+            ["linear"],
+            ["raster-value"],
+            0,
+            "#000004", // ← 8-bit: 0-255!
+            32,
+            "#1b0c41",
+            64,
+            "#4a0c6b",
+            96,
+            "#781c6d",
+            128,
+            "#a52c60",
+            160,
+            "#cf4446",
+            192,
+            "#ed6925",
+            224,
+            "#fb9b06",
+            255,
+            "#fcffa4",
+          ],
+        },
+      });
+    });
+  }, []);*/
+
   return (
     <>
       <h1>Critical Zone</h1>
