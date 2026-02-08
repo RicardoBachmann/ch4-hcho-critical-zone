@@ -1,0 +1,115 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-72.52997874362525, -8.625307994853252]
+      },
+      "id": "9",
+      "properties": {
+        "CH4_column_volume_mixing_ratio_dry_air": 1902.2159472959
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-63.65938121197962, -10.097322726421819]
+      },
+      "id": "11",
+      "properties": {
+        "CH4_column_volume_mixing_ratio_dry_air": 1935.7458832673235
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-57.23554283711503, -11.606044867899435]
+      },
+      "id": "29",
+      "properties": {
+        "CH4_column_volume_mixing_ratio_dry_air": 1902.9294469116007
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-45.45895176500272, -11.412110390849463]
+      },
+      "id": "46",
+      "properties": {
+        "CH4_column_volume_mixing_ratio_dry_air": 1902.2770945084794
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-52.3905331202763, 4.8950423644653025]
+      },
+      "id": "52",
+      "properties": {
+        "CH4_column_volume_mixing_ratio_dry_air": 1907.8562135949264
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-74.70088765996536, 5.668268139133874]
+      },
+      "id": "60",
+      "properties": {
+        "CH4_column_volume_mixing_ratio_dry_air": 1927.0366685754716
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-47.881702869245395, -5.479015703146344]
+      },
+      "id": "67",
+      "properties": {
+        "CH4_column_volume_mixing_ratio_dry_air": 1901.3928745165665
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-70.9827516778213, 5.798454043332903]
+      },
+      "id": "89",
+      "properties": {
+        "CH4_column_volume_mixing_ratio_dry_air": 1909.1386953208905
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-62.3167028879798, -6.5938260303074]
+      },
+      "id": "90",
+      "properties": {
+        "CH4_column_volume_mixing_ratio_dry_air": 1900.4734155268857
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-56.55750543332496, 6.604667797172288]
+      },
+      "id": "92",
+      "properties": {
+        "CH4_column_volume_mixing_ratio_dry_air": 1903.181697318331
+      }
+    }
+  ]
+}
