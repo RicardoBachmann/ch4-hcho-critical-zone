@@ -18,6 +18,9 @@ function App() {
   const [landUseData, setLandUseData] = useState(null); // All forestry-and-land-use
   const [assetData, setAssetData] = useState(null); // Emission assets for reservoirs
 
+  const [activeTerritoriesLayer, setActiveTerritoriesLayer] = useState(false);
+  const [activeLanguagesLayer, setActiveLanguagesLayer] = useState(false);
+
   useEffect(() => {
     async function loadData() {
       try {
@@ -152,6 +155,44 @@ function App() {
       });
     }
   }, [territoriesData, languagesData]);
+
+  // Native Land Layer Toggle
+  useEffect(() => {
+    if (!mapRef.current) return;
+    if (!mapRef.current.getLayer("native-land-territories-layer")) return;
+    if (activeTerritoriesLayer) {
+      mapRef.current.setLayoutProperty(
+        "native-land-territories-layer",
+        "visibility",
+        "visible"
+      );
+    } else {
+      mapRef.current.setLayoutProperty(
+        "native-land-territories-layer",
+        "visibility",
+        "none"
+      );
+    }
+  }, [activeTerritoriesLayer]);
+
+  // Native Language Layer Toggle
+  useEffect(() => {
+    if (!mapRef.current) return;
+    if (!mapRef.current.getLayer("native-land-languages-layer")) return;
+    if (activeLanguagesLayer) {
+      mapRef.current.setLayoutProperty(
+        "native-land-languages-layer",
+        "visibility",
+        "visible"
+      );
+    } else {
+      mapRef.current.setLayoutProperty(
+        "native-land-languages-layer",
+        "visibility",
+        "none"
+      );
+    }
+  }, [activeLanguagesLayer]);
 
   // Critical 50 Dams Layer (GDW-Data)
   useEffect(() => {
@@ -432,6 +473,20 @@ function App() {
     <>
       <h1>Critical Zone</h1>
       <h3>geo-social conflicts</h3>
+      <button
+        onClick={() => {
+          setActiveTerritoriesLayer(!activeTerritoriesLayer);
+        }}
+      >
+        Territories
+      </button>
+      <button
+        onClick={() => {
+          setActiveLanguagesLayer(!activeLanguagesLayer);
+        }}
+      >
+        Languages
+      </button>
       <div id="map-container" ref={mapContainerRef} />
     </>
   );
