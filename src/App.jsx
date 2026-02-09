@@ -156,43 +156,23 @@ function App() {
     }
   }, [territoriesData, languagesData]);
 
-  // Native Land Layer Toggle
+  // Native Land & Language Layer Toggle
   useEffect(() => {
-    if (!mapRef.current) return;
-    if (!mapRef.current.getLayer("native-land-territories-layer")) return;
-    if (activeTerritoriesLayer) {
-      mapRef.current.setLayoutProperty(
-        "native-land-territories-layer",
-        "visibility",
-        "visible"
-      );
-    } else {
-      mapRef.current.setLayoutProperty(
-        "native-land-territories-layer",
-        "visibility",
-        "none"
-      );
-    }
-  }, [activeTerritoriesLayer]);
+    const layerConfigs = [
+      { id: "native-land-territories-layer", isActive: activeTerritoriesLayer },
+      { id: "native-land-languages-layer", isActive: activeLanguagesLayer },
+    ];
 
-  // Native Language Layer Toggle
-  useEffect(() => {
-    if (!mapRef.current) return;
-    if (!mapRef.current.getLayer("native-land-languages-layer")) return;
-    if (activeLanguagesLayer) {
-      mapRef.current.setLayoutProperty(
-        "native-land-languages-layer",
-        "visibility",
-        "visible"
-      );
-    } else {
-      mapRef.current.setLayoutProperty(
-        "native-land-languages-layer",
-        "visibility",
-        "none"
-      );
-    }
-  }, [activeLanguagesLayer]);
+    layerConfigs.forEach((layer) => {
+      if (!mapRef.current) return;
+      if (!mapRef.current.getLayer(layer.id)) return;
+      if (layer.isActive) {
+        mapRef.current.setLayoutProperty(layer.id, "visibility", "visible");
+      } else {
+        mapRef.current.setLayoutProperty(layer.id, "visibility", "none");
+      }
+    });
+  }, [activeTerritoriesLayer, activeLanguagesLayer]);
 
   // Critical 50 Dams Layer (GDW-Data)
   useEffect(() => {
