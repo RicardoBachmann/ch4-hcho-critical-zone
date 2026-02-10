@@ -19,6 +19,7 @@ function App() {
   const [assetData, setAssetData] = useState(null); // Emission assets for reservoirs
 
   const [activeTerritoriesLayer, setActiveTerritoriesLayer] = useState(false);
+  const [activeIndigenousBorders, setActiveIndigenousBorders] = useState(false);
   const [activeLanguagesLayer, setActiveLanguagesLayer] = useState(false);
 
   useEffect(() => {
@@ -104,12 +105,32 @@ function App() {
         type: "line",
         source: "indigenous",
         paint: {
-          "line-color": "#000",
+          "line-color": "#fb0000",
           "line-width": 0.5,
         },
       });
     });
   }, [accessToken]);
+
+  // indigenous raisg borders toggle
+  useEffect(() => {
+    if (!mapRef.current) return;
+    if (!mapRef.current.getSource("indigenous")) return;
+
+    if (activeIndigenousBorders) {
+      mapRef.current.setLayoutProperty(
+        "indigenous-layer",
+        "visibility",
+        "visible"
+      );
+    } else {
+      mapRef.current.setLayoutProperty(
+        "indigenous-layer",
+        "visibility",
+        "none"
+      );
+    }
+  }, [activeIndigenousBorders]);
 
   useEffect(() => {
     console.log("MapRef:", mapRef);
@@ -462,11 +483,19 @@ function App() {
       </button>
       <button
         onClick={() => {
+          setActiveIndigenousBorders(!activeIndigenousBorders);
+        }}
+      >
+        Indigenous Borders
+      </button>
+      <button
+        onClick={() => {
           setActiveLanguagesLayer(!activeLanguagesLayer);
         }}
       >
         Languages
       </button>
+
       <div id="map-container" ref={mapContainerRef} />
     </>
   );
