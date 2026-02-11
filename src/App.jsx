@@ -478,6 +478,10 @@ function App() {
         onClick={() => {
           setActiveTerritoriesLayer(!activeTerritoriesLayer);
         }}
+        style={{
+          backgroundColor: activeTerritoriesLayer ? "#4e9138" : "#ccc",
+          border: activeTerritoriesLayer ? "2px solid #000" : "none",
+        }}
       >
         Territories
       </button>
@@ -485,12 +489,20 @@ function App() {
         onClick={() => {
           setActiveIndigenousBorders(!activeIndigenousBorders);
         }}
+        style={{
+          backgroundColor: activeIndigenousBorders ? "#4e9138" : "#ccc",
+          border: activeIndigenousBorders ? "2px solid #000" : "none",
+        }}
       >
         Indigenous Borders
       </button>
       <button
         onClick={() => {
           setActiveLanguagesLayer(!activeLanguagesLayer);
+        }}
+        style={{
+          backgroundColor: activeLanguagesLayer ? "#4e9138" : "#ccc",
+          border: activeLanguagesLayer ? "2px solid #000" : "none",
         }}
       >
         Languages
