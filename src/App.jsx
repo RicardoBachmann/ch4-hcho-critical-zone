@@ -424,52 +424,6 @@ function App() {
     });
   }, []);
 
-  // GGE Integration HCHO TIFF Layer (INTEGRATION NOT WORKING)
-  /*
-  useEffect(() => {
-    if (!mapRef.current) return;
-    console.log("HCHO loaded");
-    mapRef.current.once("idle", () => {
-      mapRef.current.addSource("hcho-data", {
-        type: "raster",
-        url: "mapbox://detroit313.57txc13t",
-        tileSize: 256,
-      }); 
-
-      mapRef.current.addLayer({
-        id: "hcho-layer",
-        type: "raster",
-        source: "hcho-data",
-        paint: {
-          "raster-opacity": 0.8,
-          "raster-color": [
-            "interpolate",
-            ["linear"],
-            ["raster-value"],
-            0,
-            "#000004", // ← 8-bit: 0-255!
-            32,
-            "#1b0c41",
-            64,
-            "#4a0c6b",
-            96,
-            "#781c6d",
-            128,
-            "#a52c60",
-            160,
-            "#cf4446",
-            192,
-            "#ed6925",
-            224,
-            "#fb9b06",
-            255,
-            "#fcffa4",
-          ],
-        },
-      });
-    });
-  }, []);*/
-
   return (
     <>
       <h1>Critical Zone</h1>
