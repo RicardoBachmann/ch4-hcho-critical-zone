@@ -226,21 +226,26 @@ function App() {
       });
 
       mapRef.current.addLayer({
-        id: "uhe-pch-dam-layer",
+        id: "uhe-layer",
         type: "circle",
         slot: "middle",
         source: "uhe-pch-dams",
+        filter: ["==", ["get", "tipo"], "UHE"],
         paint: {
           "circle-radius": 5,
-          "circle-color": [
-            "match",
-            ["get", "tipo"],
-            "UHE",
-            "red",
-            "PCH",
-            "#3bb2d0",
-            "#f135c5",
-          ],
+          "circle-color": "#f135c5",
+          "circle-stroke-color": "white",
+        },
+      });
+      mapRef.current.addLayer({
+        id: "pch-layer",
+        type: "circle",
+        slot: "middle",
+        source: "uhe-pch-dams",
+        filter: ["==", ["get", "tipo"], "PCH"],
+        paint: {
+          "circle-radius": 5,
+          "circle-color": "#3bb2d0",
           "circle-stroke-color": "white",
         },
       });
