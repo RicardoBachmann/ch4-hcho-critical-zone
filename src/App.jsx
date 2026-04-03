@@ -18,6 +18,10 @@ function App() {
   const [landUseData, setLandUseData] = useState(null); // All forestry-and-land-use
   const [assetData, setAssetData] = useState(null); // Emission assets for reservoirs
 
+  const [activeTerritoriesLayer, setActiveTerritoriesLayer] = useState(false);
+  const [activeIndigenousBorders, setActiveIndigenousBorders] = useState(false);
+  const [activeLanguagesLayer, setActiveLanguagesLayer] = useState(false);
+
   useEffect(() => {
     async function loadData() {
       try {
@@ -75,8 +79,8 @@ function App() {
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
       // Initial view: Amazon region
-      center: [-60.17795, -6.82434],
-      zoom: 5,
+      center: [-54.4422, -7.4702],
+      zoom: 6,
       style: "mapbox://styles/mapbox/satellite-v9",
     });
 
@@ -101,12 +105,32 @@ function App() {
         type: "line",
         source: "indigenous",
         paint: {
-          "line-color": "#000",
+          "line-color": "#fb0000",
           "line-width": 0.5,
         },
       });
     });
   }, [accessToken]);
+
+  // indigenous raisg borders toggle
+  useEffect(() => {
+    if (!mapRef.current) return;
+    if (!mapRef.current.getSource("indigenous")) return;
+
+    if (activeIndigenousBorders) {
+      mapRef.current.setLayoutProperty(
+        "indigenous-layer",
+        "visibility",
+        "visible"
+      );
+    } else {
+      mapRef.current.setLayoutProperty(
+        "indigenous-layer",
+        "visibility",
+        "none"
+      );
+    }
+  }, [activeIndigenousBorders]);
 
   useEffect(() => {
     console.log("MapRef:", mapRef);
@@ -153,6 +177,24 @@ function App() {
     }
   }, [territoriesData, languagesData]);
 
+  // Native Land & Language Layer Toggle
+  useEffect(() => {
+    const layerConfigs = [
+      { id: "native-land-territories-layer", isActive: activeTerritoriesLayer },
+      { id: "native-land-languages-layer", isActive: activeLanguagesLayer },
+    ];
+
+    layerConfigs.forEach((layer) => {
+      if (!mapRef.current) return;
+      if (!mapRef.current.getLayer(layer.id)) return;
+      if (layer.isActive) {
+        mapRef.current.setLayoutProperty(layer.id, "visibility", "visible");
+      } else {
+        mapRef.current.setLayoutProperty(layer.id, "visibility", "none");
+      }
+    });
+  }, [activeTerritoriesLayer, activeLanguagesLayer]);
+
   // Critical 50 Dams Layer (GDW-Data)
   useEffect(() => {
     mapRef.current.on("load", () => {
@@ -184,21 +226,26 @@ function App() {
       });
 
       mapRef.current.addLayer({
-        id: "uhe-pch-dam-layer",
+        id: "uhe-layer",
         type: "circle",
         slot: "middle",
         source: "uhe-pch-dams",
+        filter: ["==", ["get", "tipo"], "UHE"],
         paint: {
           "circle-radius": 5,
-          "circle-color": [
-            "match",
-            ["get", "tipo"],
-            "UHE",
-            "red",
-            "PCH",
-            "#3bb2d0",
-            "#f135c5",
-          ],
+          "circle-color": "#f135c5",
+          "circle-stroke-color": "white",
+        },
+      });
+      mapRef.current.addLayer({
+        id: "pch-layer",
+        type: "circle",
+        slot: "middle",
+        source: "uhe-pch-dams",
+        filter: ["==", ["get", "tipo"], "PCH"],
+        paint: {
+          "circle-radius": 5,
+          "circle-color": "#3bb2d0",
           "circle-stroke-color": "white",
         },
       });
@@ -382,56 +429,44 @@ function App() {
     });
   }, []);
 
-  // GGE Integration HCHO TIFF Layer (INTEGRATION NOT WORKING)
-  /*
-  useEffect(() => {
-    if (!mapRef.current) return;
-    console.log("HCHO loaded");
-    mapRef.current.once("idle", () => {
-      mapRef.current.addSource("hcho-data", {
-        type: "raster",
-        url: "mapbox://detroit313.57txc13t",
-        tileSize: 256,
-      }); 
-
-      mapRef.current.addLayer({
-        id: "hcho-layer",
-        type: "raster",
-        source: "hcho-data",
-        paint: {
-          "raster-opacity": 0.8,
-          "raster-color": [
-            "interpolate",
-            ["linear"],
-            ["raster-value"],
-            0,
-            "#000004", // ← 8-bit: 0-255!
-            32,
-            "#1b0c41",
-            64,
-            "#4a0c6b",
-            96,
-            "#781c6d",
-            128,
-            "#a52c60",
-            160,
-            "#cf4446",
-            192,
-            "#ed6925",
-            224,
-            "#fb9b06",
-            255,
-            "#fcffa4",
-          ],
-        },
-      });
-    });
-  }, []);*/
-
   return (
     <>
       <h1>Critical Zone</h1>
       <h3>geo-social conflicts</h3>
+      <button
+        onClick={() => {
+          setActiveTerritoriesLayer(!activeTerritoriesLayer);
+        }}
+        style={{
+          backgroundColor: activeTerritoriesLayer ? "#4e9138" : "#ccc",
+          border: activeTerritoriesLayer ? "2px solid #000" : "none",
+        }}
+      >
+        Territories
+      </button>
+      <button
+        onClick={() => {
+          setActiveIndigenousBorders(!activeIndigenousBorders);
+        }}
+        style={{
+          backgroundColor: activeIndigenousBorders ? "#4e9138" : "#ccc",
+          border: activeIndigenousBorders ? "2px solid #000" : "none",
+        }}
+      >
+        Indigenous Borders
+      </button>
+      <button
+        onClick={() => {
+          setActiveLanguagesLayer(!activeLanguagesLayer);
+        }}
+        style={{
+          backgroundColor: activeLanguagesLayer ? "#4e9138" : "#ccc",
+          border: activeLanguagesLayer ? "2px solid #000" : "none",
+        }}
+      >
+        Languages
+      </button>
+
       <div id="map-container" ref={mapContainerRef} />
     </>
   );
